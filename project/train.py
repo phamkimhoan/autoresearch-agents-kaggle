@@ -1,19 +1,22 @@
 """
-Baseline model: Logistic Regression with original features.
-Modify this file to improve val_accuracy.
+Experiment 2: Random Forest classifier
 """
 
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 
 from prepare import load_data, evaluate_accuracy
 
 def build_model():
-    return Pipeline([
-        ("scaler", StandardScaler()),
-        ("clf", LogisticRegression(max_iter=1000, random_state=42)),
-    ])
+    return RandomForestClassifier(
+        n_estimators=200,
+        max_depth=8,
+        min_samples_split=4,
+        min_samples_leaf=2,
+        random_state=42,
+        n_jobs=-1,
+    )
 
 def main():
     X_train, X_val, y_train, y_val = load_data()
