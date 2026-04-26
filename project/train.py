@@ -1,5 +1,5 @@
 """
-Experiment 13: Add MLP to the voting ensemble
+Experiment 15: Two MLPs with different seeds + HistGB in ensemble
 """
 
 from sklearn.ensemble import (
@@ -23,13 +23,18 @@ def build_model():
                                  min_samples_leaf=2, random_state=42, n_jobs=-1)
     hgb = HistGradientBoostingClassifier(max_iter=400, max_depth=5, learning_rate=0.03,
                                           min_samples_leaf=15, l2_regularization=0.5, random_state=42)
-    mlp = Pipeline([
+    mlp1 = Pipeline([
         ("scaler", StandardScaler()),
         ("clf", MLPClassifier(hidden_layer_sizes=(128, 64), max_iter=500,
                               alpha=0.01, random_state=42, early_stopping=True)),
     ])
+    mlp2 = Pipeline([
+        ("scaler", StandardScaler()),
+        ("clf", MLPClassifier(hidden_layer_sizes=(128, 64), max_iter=500,
+                              alpha=0.01, random_state=123, early_stopping=True)),
+    ])
     return VotingClassifier(
-        estimators=[("lr", lr), ("rf", rf), ("hgb", hgb), ("mlp", mlp)],
+        estimators=[("lr", lr), ("rf", rf), ("hgb", hgb), ("mlp1", mlp1), ("mlp2", mlp2)],
         voting="soft",
     )
 
