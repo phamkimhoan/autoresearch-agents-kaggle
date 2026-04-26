@@ -1,21 +1,19 @@
 """
-Experiment 2: Random Forest classifier
+Experiment 3: sklearn HistGradientBoostingClassifier (XGBoost-like, no libomp needed)
 """
 
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
+from sklearn.ensemble import HistGradientBoostingClassifier
 
 from prepare import load_data, evaluate_accuracy
 
 def build_model():
-    return RandomForestClassifier(
-        n_estimators=200,
-        max_depth=8,
-        min_samples_split=4,
-        min_samples_leaf=2,
+    return HistGradientBoostingClassifier(
+        max_iter=300,
+        max_depth=4,
+        learning_rate=0.05,
+        min_samples_leaf=20,
+        l2_regularization=1.0,
         random_state=42,
-        n_jobs=-1,
     )
 
 def main():
