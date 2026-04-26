@@ -1,5 +1,5 @@
 """
-Experiment 10: VotingClassifier with optimized HistGB params from GridSearch
+Experiment 13: Add MLP to the voting ensemble
 """
 
 from sklearn.ensemble import (
@@ -8,6 +8,7 @@ from sklearn.ensemble import (
     VotingClassifier,
 )
 from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 
@@ -20,11 +21,15 @@ def build_model():
     ])
     rf = RandomForestClassifier(n_estimators=300, max_depth=8, min_samples_split=4,
                                  min_samples_leaf=2, random_state=42, n_jobs=-1)
-    # Best params from GridSearch: lr=0.03, max_depth=5, min_samples_leaf=15, l2=0.5
     hgb = HistGradientBoostingClassifier(max_iter=400, max_depth=5, learning_rate=0.03,
                                           min_samples_leaf=15, l2_regularization=0.5, random_state=42)
+    mlp = Pipeline([
+        ("scaler", StandardScaler()),
+        ("clf", MLPClassifier(hidden_layer_sizes=(128, 64), max_iter=500,
+                              alpha=0.01, random_state=42, early_stopping=True)),
+    ])
     return VotingClassifier(
-        estimators=[("lr", lr), ("rf", rf), ("hgb", hgb)],
+        estimators=[("lr", lr), ("rf", rf), ("hgb", hgb), ("mlp", mlp)],
         voting="soft",
     )
 
