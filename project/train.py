@@ -1,5 +1,5 @@
 """
-Experiment 4: VotingClassifier (LR + RF + HistGB) — soft voting
+Experiment 10: VotingClassifier with optimized HistGB params from GridSearch
 """
 
 from sklearn.ensemble import (
@@ -16,12 +16,13 @@ from prepare import load_data, evaluate_accuracy
 def build_model():
     lr = Pipeline([
         ("scaler", StandardScaler()),
-        ("clf", LogisticRegression(max_iter=1000, random_state=42)),
+        ("clf", LogisticRegression(max_iter=1000, C=1.0, random_state=42)),
     ])
-    rf = RandomForestClassifier(n_estimators=200, max_depth=8, min_samples_split=4,
+    rf = RandomForestClassifier(n_estimators=300, max_depth=8, min_samples_split=4,
                                  min_samples_leaf=2, random_state=42, n_jobs=-1)
-    hgb = HistGradientBoostingClassifier(max_iter=300, max_depth=4, learning_rate=0.05,
-                                          min_samples_leaf=20, l2_regularization=1.0, random_state=42)
+    # Best params from GridSearch: lr=0.03, max_depth=5, min_samples_leaf=15, l2=0.5
+    hgb = HistGradientBoostingClassifier(max_iter=400, max_depth=5, learning_rate=0.03,
+                                          min_samples_leaf=15, l2_regularization=0.5, random_state=42)
     return VotingClassifier(
         estimators=[("lr", lr), ("rf", rf), ("hgb", hgb)],
         voting="soft",
