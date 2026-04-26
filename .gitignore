@@ -1,0 +1,8 @@
+.env
+.venv/
+original/
+project/data/
+project/run.log
+project/results.tsv
+__pycache__/
+*.pyc
